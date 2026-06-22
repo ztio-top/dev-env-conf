@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# VS Code Server 插件同步脚本 for Remote-SSH 环境
 # 包含全栈与 AI 扩展的完整列表
 extensions=(
     "charliermarsh.ruff",                 # Python 极速格式化与代码检查
@@ -12,22 +12,21 @@ extensions=(
     "ms-azuretools.vscode-docker",        # Dockerfile 格式化与容器管理
     "ms-vscode-remote.remote-containers", # Dev Containers (容器化开发环境核心)
 
+    # Remote 插件是“客户端”插件，而不是“服务端”插件。 不要安装到server端，否则会导致 VS Code 无法正确识别和使用 Remote 功能。
     # --- 远程与容器化开发三剑客 ---
-    "ms-vscode-remote.remote-containers", # Dev Containers (容器化开发环境核心)
-    "ms-vscode-remote.remote-ssh",        # Remote - SSH (直连物理节点/虚拟机的神器)
-    "ms-vscode-remote.remote-wsl",        # WSL (完美打通 Win11 本地 Linux 子系统)
+    # "ms-vscode-remote.remote-containers", # Dev Containers (容器化开发环境核心)
+    # "ms-vscode-remote.remote-ssh",        # Remote - SSH (直连物理节点/虚拟机的神器)
+    # "ms-vscode-remote.remote-wsl",        # WSL (完美打通 Win11 本地 Linux 子系统)
 
     # --- 本地 AI 算力接入 ---
-    "Continue.continue",                  # 本地大模型接入利器 (极佳的代码补全与问答)
-    "saoudrizwan.claude-dev"              # Cline: 强大的本地 AI Agent (自动化终端与改写文件)
     "Continue.continue",                  # 本地大模型接入利器 (极佳的代码补全与问答体验)
     "saoudrizwan.claude-dev"              # Cline: 强大的本地 AI Agent (可自动执行终端命令与改写文件)
 )
 
-echo -e "\033[1;36m开始批量同步 VS Code 环境插件...\033[0m"
+echo -e "\033[1;36m开正在为 Remote-SSH 环境同步 VS Code 扩展......\033[0m"
 
 for ext in "${extensions[@]}"; do
-    echo -e "\033[1;33m正在安装: $ext\033[0m"
+    echo -e "\033[1;33m正在同步: $ext\033[0m"
     code --install-extension "$ext" --force
 done
 
