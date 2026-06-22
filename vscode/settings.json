@@ -169,7 +169,7 @@
     // 【Linux/云原生生态：Bash / Zsh 脚本】
     "[shellscript]": {
         // 使用 shell-format 插件（底层调用 shfmt）统一对齐 if/fi 和各种循环块
-        "editor.defaultFormatter": "foxundermoon.shell-format",
+        "editor.defaultFormatter": "mkhl.shfmt",
         // 开启保存时自动格式化，保持脚本文件的整洁和一致的风格
         "editor.formatOnSave": true,
         // Shell 脚本通常遵循 4 个空格缩进的开源社区规范
@@ -179,6 +179,12 @@
         // 开启换行极易导致用鼠标框选复制到终端时发生断层，引发致命的执行错误。
         "editor.wordWrap": "off"
     },
+    "shellformat.path": "shfmt", // 明确指定 shfmt 的路径，避免在 PATH 中存在多个版本时调用错误的 shfmt
+    "shfmt.args": [
+        "-i",
+        "4", // 缩进 4 个空格
+        "-ci" // 缩进 switch 的 case 语句
+    ],
     // 【Windows 生态：PowerShell】
     "[powershell]": {
         // 必须依赖微软官方的 PowerShell 插件提供语言服务和格式化

@@ -2,7 +2,8 @@
 if (-not (Get-Command shfmt -ErrorAction SilentlyContinue)) {
     Write-Host "正在安装 shfmt..." -ForegroundColor Cyan
     winget install mvdan.shfmt --silent
-} else {
+}
+else {
     Write-Host "shfmt 已安装，跳过。" -ForegroundColor Green
 }
 # 定义涵盖后端、前端、运维、容器与 AI 接入的终极插件列表
@@ -12,7 +13,8 @@ $extensions = @(
     "ms-python.vscode-pylance",           # Python 严格类型推断
     "esbenp.prettier-vscode",             # 前端、JSON、Markdown 统一排版规范
     "redhat.vscode-yaml",                 # YAML 格式化与 Docker Compose 语法校验
-    "foxundermoon.shell-format",          # Bash/Zsh 脚本格式化与对齐
+    "mkhl.shfmt",                         # Bash/Zsh 脚本格式化与对齐"
+    "timonwong.shellcheck",                # Bash/Zsh 脚本静态分析与防呆提示
     "ms-vscode.PowerShell",               # PowerShell 核心支持与防呆格式化
     "ms-azuretools.vscode-docker",        # Dockerfile 格式化与容器管理
 
