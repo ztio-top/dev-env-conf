@@ -1,3 +1,10 @@
+# 使用 winget 的检测逻辑
+if (-not (Get-Command shfmt -ErrorAction SilentlyContinue)) {
+    Write-Host "正在安装 shfmt..." -ForegroundColor Cyan
+    winget install mvdan.shfmt --silent
+} else {
+    Write-Host "shfmt 已安装，跳过。" -ForegroundColor Green
+}
 # 定义涵盖后端、前端、运维、容器与 AI 接入的终极插件列表
 $extensions = @(
     "charliermarsh.ruff",                 # Python 极速格式化与代码检查

@@ -1,4 +1,13 @@
 #!/bin/bash
+
+set -e
+# 幂等安装 shfmt
+if ! command -v shfmt &> /dev/null; then
+    echo "[INFO] 正在安装 shfmt..."
+    sudo apt-get update && sudo apt-get install -y shfmt
+else
+    echo "[INFO] shfmt 已安装，跳过。"
+fi
 # VS Code Server 插件同步脚本 for Remote-SSH 环境
 # 包含全栈与 AI 扩展的完整列表
 extensions=(
@@ -24,9 +33,17 @@ extensions=(
 
 echo -e "\033[1;36m开正在为 Remote-SSH 环境同步 VS Code 扩展......\033[0m"
 
-for ext in "${extensions[@]}"; do
-    echo -e "\033[1;33m正在同步: $ext\033[0m"
-    code --install-extension "$ext" --force
-done
+
+# 幂等安装 VS Code 插件
+# 我们检查是否安装过 VS Code Server，没有的话不执行以免报错
+if [ -d "$HOME/.vscode-server" ]; then
+    for ext in "${extensions[@]}"; do
+        echo -e "\033[1;33m正在同步: $ext\033[0m"
+        # --install-extension 本身就是幂等的，但我们加一层静默检查会更优雅
+        code --install-extension "$ext" --force > /dev/null 2>&1 && echo "[SYNC] $ext 已同步"
+    done
+else
+    echo "[WARN] 未检测到 VS Code Server，请先通过 SSH 连接一次服务器。"
+fi
 
 echo -e "\033[1;32m环境插件同步完成！\033[0m"

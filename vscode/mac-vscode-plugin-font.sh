@@ -18,13 +18,13 @@ NC='\033[0m' # 清除颜色
 echo -e "${CYAN}=== 🚀 启动 macOS 开发环境纯净基座构建 ===${NC}"
 
 # ==========================================
-# 1. 核心包管理器：Homebrew
+# 🌟. 核心包管理器：Homebrew
 # ==========================================
 if ! command -v brew &> /dev/null; then
     echo -e "${YELLOW}[INFO] 未检测到 Homebrew，开始从官方源自动编译安装...${NC}"
     # 官方全自动安装脚本，会自动处理 Apple Silicon 的 /opt/homebrew 路径映射
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    
+
     # 提示用户手动将 brew 写入 zshrc（以防脚本执行环境变量未实时刷新）
     echo -e "${YELLOW}⚠️ 注意：如果是全新安装的 Homebrew，请根据终端最后的提示，执行 eval 激活命令。${NC}"
 else
@@ -32,7 +32,7 @@ else
 fi
 
 # ==========================================
-# 2. 终端视觉底座：Nerd Font
+# 🌟. 终端视觉底座：Nerd Font
 # ==========================================
 echo -e "${CYAN}\n=== 正在核对终端字体引擎 ===${NC}"
 # 检查是否已安装该字体 (通过 brew list 验证幂等性)
@@ -44,7 +44,17 @@ else
 fi
 
 # ==========================================
-# 3. VS Code 全栈与 AI 插件链
+# 🌟. 终端格式化引擎：shfmt
+
+if ! command -v shfmt &> /dev/null; then
+    echo "正在安装 shfmt..."
+    brew install shfmt
+else
+    echo "shfmt 已安装，跳过。"
+fi
+
+# ==========================================
+# 🌟. VS Code 全栈与 AI 插件链
 # ==========================================
 echo -e "${CYAN}\n=== 开始同步 VS Code 插件生态 ===${NC}"
 
@@ -81,7 +91,7 @@ fi
 echo -e "${GREEN}\n=========================================================${NC}"
 echo -e "${GREEN}🎉 macOS 纯净开发基座初始化完毕！${NC}"
 echo -e "${GREEN}下一步指引：${NC}"
-echo -e "1. 打开 VS Code，按下 ${YELLOW}Cmd + Shift + P${NC}，打开 ${YELLOW}settings.json${NC}。"
-echo -e "2. 将我们之前定稿的【终极防呆配置】全文覆盖进去。"
-echo -e "3. 彻底重启 VS Code，感受零报错的极速编码体验。"
+echo -e "🌟. 打开 VS Code，按下 ${YELLOW}Cmd + Shift + P${NC}，打开 ${YELLOW}settings.json${NC}。"
+echo -e "🌟. 将我们之前定稿的【终极防呆配置】全文覆盖进去。"
+echo -e "🌟. 彻底重启 VS Code，感受零报错的极速编码体验。"
 echo -e "${GREEN}=========================================================${NC}"

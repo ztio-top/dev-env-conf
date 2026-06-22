@@ -170,6 +170,8 @@
     "[shellscript]": {
         // 使用 shell-format 插件（底层调用 shfmt）统一对齐 if/fi 和各种循环块
         "editor.defaultFormatter": "foxundermoon.shell-format",
+        // 开启保存时自动格式化，保持脚本文件的整洁和一致的风格
+        "editor.formatOnSave": true,
         // Shell 脚本通常遵循 4 个空格缩进的开源社区规范
         "editor.tabSize": 4,
         // 关键防呆设计：强制关闭自动换行。
