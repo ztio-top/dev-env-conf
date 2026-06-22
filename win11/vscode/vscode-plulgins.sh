@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# 包含全栈与 AI 扩展的完整列表
 extensions=(
     "charliermarsh.ruff"
     "ms-python.python"
@@ -7,15 +8,18 @@ extensions=(
     "esbenp.prettier-vscode"
     "redhat.vscode-yaml"
     "foxundermoon.shell-format"
+    "ms-vscode.PowerShell"
     "ms-azuretools.vscode-docker"
     "ms-vscode-remote.remote-containers"
+    "Continue.continue"
+    "saoudrizwan.claude-dev"
 )
 
-echo "开始批量安装 VS Code 必备插件..."
+echo -e "\033[1;36m开始批量同步 VS Code 环境插件...\033[0m"
 
 for ext in "${extensions[@]}"; do
-    echo "正在安装: $ext"
+    echo -e "\033[1;33m正在安装: $ext\033[0m"
     code --install-extension "$ext" --force
 done
 
-echo "所有环境插件安装完毕！"
+echo -e "\033[1;32m环境插件同步完成！\033[0m"
