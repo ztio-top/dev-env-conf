@@ -11,18 +11,19 @@ fi
 # VS Code Server 插件同步脚本 for Remote-SSH 环境
 # 包含全栈与 AI 扩展的完整列表
 extensions=(
-	"charliermarsh.ruff"          # Python 极速格式化与代码检查
-	"ms-python.python"            # Python 核心支持
-	"ms-python.vscode-pylance"    # Python 严格类型推断
-	"esbenp.prettier-vscode"      # 前端、JSON、Markdown 统一排版规范
-	"redhat.vscode-yaml"          # YAML 格式化与 Docker Compose 语法校验
-	"mkhl.shfmt"                  # Bash/Zsh 脚本格式化与对齐"
-	"timonwong.shellcheck"        # Bash/Zsh 脚本静态分析与防呆提示
-	"ms-vscode.PowerShell"        # PowerShell 核心支持与防呆格式化
-	"ms-azuretools.vscode-docker" # Dockerfile 格式化与容器管理
+	"charliermarsh.ruff"                                  # Python 极速格式化与代码检查
+	"ms-python.python"                                    # Python 核心支持
+	"ms-python.vscode-pylance"                            # Python 严格类型推断
+	"esbenp.prettier-vscode"                              # 前端、JSON、Markdown 统一排版规范
+	"redhat.vscode-yaml"                                  # YAML 格式化与 Docker Compose 语法校验
+	"mkhl.shfmt"                                          # Bash/Zsh 脚本格式化与对齐"
+	"timonwong.shellcheck"                                # Bash/Zsh 脚本静态分析与防呆提示
+	"ms-vscode.PowerShell"                                # PowerShell 核心支持与防呆格式化
+	"ms-azuretools.vscode-docker"                         # Dockerfile 格式化与容器管理
+	"ahmadalli.vscode-nginx-config"                       # Nginx 配置文件高亮与格式化
+	"AaaaronZhou.nginx-config-formatter-vscode-extension" # Nginx 配置文件格式化工具
 
-	# Remote 插件是“客户端”插件，而不是“服务端”插件。 不要安装到server端，否则会导致 VS Code 无法正确识别和使用 Remote 功能。
-	# --- 远程与容器化开发三剑客 ---
+	# --- 远程与容器化开发三剑客 ---  Remote 插件是“客户端”插件，而不是“服务端”插件。 不要安装到server端，否则会导致 VS Code 无法正确识别和使用 Remote 功能。
 	# "ms-vscode-remote.remote-containers"  # Dev Containers (容器化开发环境核心)
 	# "ms-vscode-remote.remote-ssh"         # Remote - SSH (直连物理节点/虚拟机的神器)
 	# "ms-vscode-remote.remote-wsl"         # WSL (完美打通 Win11 本地 Linux 子系统)

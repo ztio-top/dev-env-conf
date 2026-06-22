@@ -17,6 +17,8 @@ $extensions = @(
     "timonwong.shellcheck",                # Bash/Zsh 脚本静态分析与防呆提示
     "ms-vscode.PowerShell",               # PowerShell 核心支持与防呆格式化
     "ms-azuretools.vscode-docker",        # Dockerfile 格式化与容器管理
+    "ahmadalli.vscode-nginx-config"                       # Nginx 配置文件高亮与格式化
+    "AaaaronZhou.nginx-config-formatter-vscode-extension" # Nginx 配置文件格式化工具
 
     # --- 远程与容器化开发三剑客 ---
     "ms-vscode-remote.remote-containers", # Dev Containers (容器化开发环境核心)

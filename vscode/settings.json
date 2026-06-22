@@ -274,5 +274,30 @@
             "strings": "off",
             "other": "off"
         }
-    }
+    },
+    // ==========================================
+    // 现代 Nginx 专属配置区 (2026 Edition)
+    // ==========================================
+    // 1. 强制文件后缀关联（极度重要，防止识别为 INI 或纯文本）
+    "files.associations": {
+        "nginx.conf": "nginx",
+        "default.conf": "nginx",
+        "*/nginx/conf.d/*.conf": "nginx",
+        "*/nginx/sites-available/*": "nginx"
+    },
+    // 2. 语言专属底层行为
+    "[nginx]": {
+        // 绑定全新的格式化插件
+        "editor.defaultFormatter": "AaaaronZhou.nginx-config-formatter-vscode-extension",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 4,
+        "editor.wordWrap": "off"
+    },
+    // 3. 格式化器的个性化微调 (新插件自带的超强功能)
+    // 使用空格而不是 Tab
+    "nginx-config-formatter.indentStyle": "space",
+    // 默认关闭强行对齐，避免把原本紧凑的配置拉得太开 (可根据个人喜好改为 true)
+    "nginx-config-formatter.align": false,
+    // 在 { 之后保留一个空行让代码更透气
+    "nginx-config-formatter.trailingBlankLines": false
 }

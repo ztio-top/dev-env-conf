@@ -59,19 +59,26 @@ fi
 echo -e "${CYAN}\n=== 开始同步 VS Code 插件生态 ===${NC}"
 
 extensions=(
-	"charliermarsh.ruff"                 # Python 极速格式化与代码检查
-	"ms-python.python"                   # Python 核心支持
-	"ms-python.vscode-pylance"           # Python 严格类型推断
-	"esbenp.prettier-vscode"             # 前端、JSON、Markdown 统一排版规范
-	"redhat.vscode-yaml"                 # YAML 格式化与 Docker Compose 校验
-	"mkhl.shfmt"                         # Bash/Zsh 脚本格式化与对齐"
-	"timonwong.shellcheck"               # Bash/Zsh 脚本静态分析与防呆提示
-	"ms-vscode.PowerShell"               # 跨平台自动化脚本支持
-	"ms-azuretools.vscode-docker"        # Dockerfile 格式化与容器管理
+	"charliermarsh.ruff"                                  # Python 极速格式化与代码检查
+	"ms-python.python"                                    # Python 核心支持
+	"ms-python.vscode-pylance"                            # Python 严格类型推断
+	"esbenp.prettier-vscode"                              # 前端、JSON、Markdown 统一排版规范
+	"redhat.vscode-yaml"                                  # YAML 格式化与 Docker Compose 校验
+	"mkhl.shfmt"                                          # Bash/Zsh 脚本格式化与对齐"
+	"timonwong.shellcheck"                                # Bash/Zsh 脚本静态分析与防呆提示
+	"ms-vscode.PowerShell"                                # 跨平台自动化脚本支持
+	"ms-azuretools.vscode-docker"                         # Dockerfile 格式化与容器管理
+	"ahmadalli.vscode-nginx-config"                       # Nginx 配置文件高亮与格式化
+	"AaaaronZhou.nginx-config-formatter-vscode-extension" # Nginx 配置文件格式化工具
+
+	# --- 远程与容器化开发三剑客 ---
 	"ms-vscode-remote.remote-containers" # 容器化开发核心
 	"ms-vscode-remote.remote-ssh"        # 远端物理机直连
-	"Continue.continue"                  # 本地大模型接入利器
-	"saoudrizwan.claude-dev"             # Cline: 本地 AI Agent
+	"ms-vscode-remote.remote-wsl"        # WSL (完美打通 Win11 本地 Linux 子系统)
+
+	# --- 本地 AI 算力接入 ---
+	"Continue.continue"      # 本地大模型接入利器
+	"saoudrizwan.claude-dev" # Cline: 本地 AI Agent
 )
 
 # 防呆检查：确保用户已经将 code 命令注入了 Mac 的系统环境变量
