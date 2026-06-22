@@ -14,8 +14,16 @@ if [ -f "$BASH_RC" ]; then
 
 $START_MARKER
 # 优化原因：放入 .bashrc 确保每次交互式 Shell 动态解析，支持 tmux/screen
+# 优化原因：改用 PROMPT_COMMAND，确保每次都能输出真实的绝对路径，且不干扰 PS1 渲染
 if [ -n "\$PS1" ]; then
-    export PS1="\$PS1\\[\\e]1337;CurrentDir="'\$(pwd)\\a\\]'
+    tabby_update_cwd() {
+	# 使用 pwd -P 强制解析真实物理路径，解决威联通等系统的软链接问题
+        printf "\033]1337;CurrentDir=%s\007" "\$PWD"
+    }
+    # 幂等性检查：如果 PROMPT_COMMAND 中还没有 tabby_update_cwd，才进行追加
+    if [[ "\$PROMPT_COMMAND" != *tabby_update_cwd* ]]; then
+        PROMPT_COMMAND="tabby_update_cwd; \${PROMPT_COMMAND:-}"
+    fi
 fi
 $END_MARKER
 EOF
