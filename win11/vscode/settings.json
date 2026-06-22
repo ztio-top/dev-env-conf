@@ -30,7 +30,7 @@
     "editor.guides.bracketPairs": true,
     // 关闭小地图。除非你的文件长达数千行，否则小地图只会占用宝贵的屏幕横向空间，建议关掉。
     "editor.minimap.enabled": false,
-    //三、 沉浸式编辑体验 (Editor UX & Flow)
+    //🌟、 沉浸式编辑体验 (Editor UX & Flow)
     // 对于经常需要长时间盯着屏幕敲击机械键盘的开发者来说，一点点动画过渡就能极大地减轻视觉疲劳。
     // 开启平滑滚动。无论是鼠标滚轮还是 PageDown，画面移动会有过渡动画，眼睛更容易追踪代码位置
     "editor.smoothScrolling": true,
@@ -88,14 +88,14 @@
     // 远程开发神器：连接到 Linux 服务器时，自动转发该服务器上启动的端口到本地 Win11
     // 例如你在远程启动了一个 8080 端口的服务，本地浏览器直接输入 localhost:8080 即可访问
     "remote.autoForwardPorts": true,
-    //五、 Git 工作流加速 (Git Flow)
+    //🌟、 Git 工作流加速 (Git Flow)
     // 为了配合你现有的 GitLens 等插件，可以让 VS Code 的 Git 集成更加自动化。
     // 自动拉取远端状态，不仅会在左下角显示是否有新提交，还能避免 push 时才发现有冲突
     "git.autofetch": true,
     // 如果当前分支没有设置 upstream，自动进行发布并关联，省去每次输入 git push --set-upstream 的烦恼
     "git.pushUrl": "auto",
     // =========================================================================
-    // 八、 工作区与资源管理器体验优化
+    //🌟、 工作区与资源管理器体验优化
     // =========================================================================
     // 关闭拖拽确认：默认情况下在左侧目录树拖拽文件会弹窗询问，极其繁琐
     "explorer.confirmDragAndDrop": false,
@@ -190,17 +190,6 @@
         "editor.tabSize": 2,
         // 开启高级自动缩进推断，按回车时自动对齐上一行
         "editor.autoIndent": "advanced"
-    },
-    // =========================================================================
-    // 【运维与自动化：Shell Script (Bash/Zsh)】
-    "[shellscript]": {
-        // 使用 shell-format 插件（底层通常调用 shfmt）来对齐杂乱的脚本
-        "editor.defaultFormatter": "foxundermoon.shell-format",
-        // Shell 脚本习惯使用 4 个空格的缩进层级
-        "editor.tabSize": 4,
-        // 关键防呆设计：关闭自动换行。Shell 脚本经常包含极长的单行命令，
-        // 如果开启视觉换行，在用鼠标选中并复制到终端时，极易因格式断裂导致命令执行错误。
-        "editor.wordWrap": "off"
     },
     // =========================================================================
     // 【文档编写：Markdown】
