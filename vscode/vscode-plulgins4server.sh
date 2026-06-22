@@ -10,7 +10,6 @@ extensions=(
     "foxundermoon.shell-format",          # Bash/Zsh 脚本格式化与对齐
     "ms-vscode.PowerShell",               # PowerShell 核心支持与防呆格式化
     "ms-azuretools.vscode-docker",        # Dockerfile 格式化与容器管理
-    "ms-vscode-remote.remote-containers", # Dev Containers (容器化开发环境核心)
 
     # Remote 插件是“客户端”插件，而不是“服务端”插件。 不要安装到server端，否则会导致 VS Code 无法正确识别和使用 Remote 功能。
     # --- 远程与容器化开发三剑客 ---
