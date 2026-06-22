@@ -1,0 +1,52 @@
+{
+    "github.copilot.advanced": {},
+    "containers.containerClient": "com.microsoft.visualstudio.containers.docker",
+    "containers.orchestratorClient": "com.microsoft.visualstudio.orchestrators.dockercompose",
+    "git.confirmSync": false,
+    "gitlens.ai.model": "vscode",
+    "gitlens.ai.vscode.model": "copilot:oswe-vscode-modelD",
+    //一、 代码规范与防呆设计 (File & Editor Standards)
+    //这些设置能帮你自动清理代码中的“脏数据”，保持代码库（尤其是进行 Code Review 时）的绝对整洁。
+    // 保存时自动格式化。配合 Prettier、Black 等插件，写完代码顺手 Ctrl+S 就排版好了。
+    "editor.formatOnSave": true,
+    // 自动删除行尾的无用空格。避免 Git 提交记录中出现满屏毫无意义的空格修改红绿条。
+    "files.trimTrailingWhitespace": true,
+    // 确保文件末尾始终有一个空行（POSIX 规范）。这能解决在 GitHub/GitLab 上看 PR 时常见的 "No newline at end of file" 警告。
+    "files.insertFinalNewline": true,
+    // 粘贴代码时自动格式化。从 StackOverflow 抄代码时，自动适应你的缩进规范。
+    "editor.formatOnPaste": true,
+    //二、 视觉与阅读效率 (Visual & Readability)
+    // VS Code 默认的界面对代码结构的展示可以进一步优化，特别是在阅读复杂逻辑时。
+    // 开启字体连字（需要安装如 Fira Code 或 Win11 自带的 Cascadia Code 字体）。将 !== 渲染为美观的连体符号。
+    "editor.fontLigatures": true,
+    "editor.fontFamily": "'Cascadia Code', Consolas, 'Courier New', monospace",
+    // 渲染空白字符（仅在单词之间或尾部）。方便你一眼看出哪里多敲了空格，或者混用了 Tab 和空格。
+    "editor.renderWhitespace": "boundary",
+    // 开启括号对参考线。除了自带的括号变色，这会在同级的大括号之间画一条垂直的线，看嵌套过深的 JSON 或回调函数时简直是救星。
+    "editor.guides.bracketPairs": true,
+    // 关闭小地图。除非你的文件长达数千行，否则小地图只会占用宝贵的屏幕横向空间，建议关掉。
+    "editor.minimap.enabled": false,
+    //三、 性能与搜索过滤 (Performance & Search)
+    // 当项目逐渐庞大，搜索速度会变慢，且容易搜出编译后的垃圾文件。
+    // 窗口失去焦点时自动保存。切出编辑器去浏览器查文档或看终端时，代码已经自动存好了，再也不怕意外崩溃。
+    "files.autoSave": "onFocusChange",
+    // 在全局搜索中排除干扰项。不要让编译产物、依赖包和缓存文件污染你的搜索结果。
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.code-search": true,
+        "**/.git": true,
+        "**/__pycache__": true,
+        "**/.next": true,
+        "**/dist": true
+    },
+    // 同样在左侧文件资源管理器中隐藏这些不需要手动修改的文件。
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/__pycache__": true
+    }
+}
