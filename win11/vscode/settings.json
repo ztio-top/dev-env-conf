@@ -5,7 +5,7 @@
     "git.confirmSync": false,
     "gitlens.ai.model": "vscode",
     "gitlens.ai.vscode.model": "copilot:oswe-vscode-modelD",
-    //一、 代码规范与防呆设计 (File & Editor Standards)
+    //🌟、 代码规范与防呆设计 (File & Editor Standards)
     //这些设置能帮你自动清理代码中的“脏数据”，保持代码库（尤其是进行 Code Review 时）的绝对整洁。
     // 保存时自动格式化。配合 Prettier、Black 等插件，写完代码顺手 Ctrl+S 就排版好了。
     "editor.formatOnSave": true,
@@ -15,7 +15,11 @@
     "files.insertFinalNewline": true,
     // 粘贴代码时自动格式化。从 StackOverflow 抄代码时，自动适应你的缩进规范。
     "editor.formatOnPaste": true,
-    //二、 视觉与阅读效率 (Visual & Readability)
+    // 强制全局使用 LF 换行，彻底斩断 Win11 与 Linux/云端环境的兼容性隐患
+    "files.eol": "\n",
+    // 强制全局使用 UTF-8 编码，防止在处理包含中文字符的配置文件或日志时出现乱码
+    "files.encoding": "utf8",
+    //🌟、 视觉与阅读效率 (Visual & Readability)
     // VS Code 默认的界面对代码结构的展示可以进一步优化，特别是在阅读复杂逻辑时。
     // 开启字体连字（需要安装如 Fira Code 或 Win11 自带的 Cascadia Code 字体）。将 !== 渲染为美观的连体符号。
     "editor.fontLigatures": true,
@@ -26,7 +30,16 @@
     "editor.guides.bracketPairs": true,
     // 关闭小地图。除非你的文件长达数千行，否则小地图只会占用宝贵的屏幕横向空间，建议关掉。
     "editor.minimap.enabled": false,
-    //三、 性能与搜索过滤 (Performance & Search)
+    //三、 沉浸式编辑体验 (Editor UX & Flow)
+    // 对于经常需要长时间盯着屏幕敲击机械键盘的开发者来说，一点点动画过渡就能极大地减轻视觉疲劳。
+    // 开启平滑滚动。无论是鼠标滚轮还是 PageDown，画面移动会有过渡动画，眼睛更容易追踪代码位置
+    "editor.smoothScrolling": true,
+    "workbench.list.smoothScrolling": true,
+    // 让光标的移动具有物理惯性般的平滑动画，极度提升打字时的视觉流畅感
+    "editor.cursorSmoothCaretAnimation": "on",
+    // 光标闪烁方式改为平滑过渡
+    "editor.cursorBlinking": "smooth",
+    //🌟、 性能与搜索过滤 (Performance & Search)
     // 当项目逐渐庞大，搜索速度会变慢，且容易搜出编译后的垃圾文件。
     // 窗口失去焦点时自动保存。切出编辑器去浏览器查文档或看终端时，代码已经自动存好了，再也不怕意外崩溃。
     "files.autoSave": "onFocusChange",
@@ -38,7 +51,15 @@
         "**/.git": true,
         "**/__pycache__": true,
         "**/.next": true,
-        "**/dist": true
+        "**/dist": true,
+        // 告诉 VS Code 的底层监听器：绝对不要去监控这些 AI 权重和数据文件的变化
+        "**/.git/objects/**": true,
+        "**/node_modules/**": true,
+        "**/.venv/**": true,
+        "**/*.safetensors": true, // 排除 HuggingFace 常见的张量文件
+        "**/*.gguf": true, // 排除本地量化大模型文件
+        "**/*.bin": true,
+        "**/*.pth": true // 排除 PyTorch 权重文件
     },
     // 同样在左侧文件资源管理器中隐藏这些不需要手动修改的文件。
     "files.exclude": {
@@ -47,6 +68,153 @@
         "**/.hg": true,
         "**/CVS": true,
         "**/.DS_Store": true,
-        "**/__pycache__": true
+        "**/__pycache__": true,
+        // 告诉 VS Code 的底层监听器：绝对不要去监控这些 AI 权重和数据文件的变化
+        "**/.git/objects/**": true,
+        "**/node_modules/**": true,
+        "**/.venv/**": true,
+        "**/*.safetensors": true, // 排除 HuggingFace 常见的张量文件
+        "**/*.gguf": true, // 排除本地量化大模型文件
+        "**/*.bin": true,
+        "**/*.pth": true // 排除 PyTorch 权重文件
+    },
+    //🌟、 终端与远程开发优化 (Terminal & Remote Dev)
+    //如果你习惯在 VS Code 的集成终端中进行 Shell 交互，或者频繁通过 SSH 连接到远端的 Ubuntu Server 虚拟机进行测试与部署，这些设置能让你事半功倍：
+    // 终端光标样式设置为线条，并开启平滑闪烁，与编辑器保持一致
+    "terminal.integrated.cursorStyle": "line",
+    "terminal.integrated.cursorBlinking": true,
+    // 增加终端的回滚行数，在查看超长的系统日志、模型编译输出或 Docker 启动日志时不至于丢失历史记录
+    "terminal.integrated.scrollback": 10000,
+    // 远程开发神器：连接到 Linux 服务器时，自动转发该服务器上启动的端口到本地 Win11
+    // 例如你在远程启动了一个 8080 端口的服务，本地浏览器直接输入 localhost:8080 即可访问
+    "remote.autoForwardPorts": true,
+    //五、 Git 工作流加速 (Git Flow)
+    // 为了配合你现有的 GitLens 等插件，可以让 VS Code 的 Git 集成更加自动化。
+    // 自动拉取远端状态，不仅会在左下角显示是否有新提交，还能避免 push 时才发现有冲突
+    "git.autofetch": true,
+    // 如果当前分支没有设置 upstream，自动进行发布并关联，省去每次输入 git push --set-upstream 的烦恼
+    "git.pushUrl": "auto",
+    // =========================================================================
+    // 八、 工作区与资源管理器体验优化
+    // =========================================================================
+    // 关闭拖拽确认：默认情况下在左侧目录树拖拽文件会弹窗询问，极其繁琐
+    "explorer.confirmDragAndDrop": false,
+    // 打开 VS Code 时，如果没有恢复之前的会话，显示一张干净的黑板，而不是烦人的欢迎页
+    "workbench.startupEditor": "none",
+    // 在左侧目录树中突出显示包含错误或警告的文件，方便快速定位问题
+    "problems.decorations.enabled": true,
+    // =========================================================================
+    // 🌟、 常用语言全局兜底配置 (Language-Specific Settings)
+    // 作用：当不使用 Dev Containers 或工作区配置时，为零散文件提供基础的规范保障
+    // =========================================================================
+    // 【Linux/云原生生态：Bash / Zsh 脚本】
+    "[shellscript]": {
+        // 使用 shell-format 插件（底层调用 shfmt）统一对齐 if/fi 和各种循环块
+        "editor.defaultFormatter": "foxundermoon.shell-format",
+        // Shell 脚本通常遵循 4 个空格缩进的开源社区规范
+        "editor.tabSize": 4,
+        // 关键防呆设计：强制关闭自动换行。
+        // 在编写极其冗长的单行命令（如复杂的 awk/sed 过滤或长参数的 Docker run）时，
+        // 开启换行极易导致用鼠标框选复制到终端时发生断层，引发致命的执行错误。
+        "editor.wordWrap": "off"
+    },
+    // 【Windows 生态：PowerShell】
+    "[powershell]": {
+        // 必须依赖微软官方的 PowerShell 插件提供语言服务和格式化
+        "editor.defaultFormatter": "ms-vscode.PowerShell",
+        "editor.tabSize": 4,
+        "editor.wordWrap": "off",
+        // PowerShell 的语法块对齐较为严格，开启输入时格式化，
+        // 可以在敲下右大括号 `}` 的瞬间自动规整代码逻辑层级。
+        "editor.formatOnType": true
+    },
+    // 【容器化：Dockerfile】
+    "[dockerfile]": {
+        // 使用微软官方 Docker 插件进行格式化
+        "editor.defaultFormatter": "ms-azuretools.vscode-docker",
+        // 开启保存时自动格式化，统一 RUN 指令的换行和缩进风格
+        "editor.formatOnSave": true
+    },
+    // 【Python：现代后端与 AI 开发基座】
+    "[python]": {
+        // 指定 Ruff 为默认格式化工具。Ruff 底层由 Rust 编写，速度极快，
+        // 并且能同时承担 Black（代码排版）和 isort（导包排序）的工作。
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        // 放宽单行代码的最大长度限制。传统的 PEP8 规范是 80 个字符，
+        // 但在现代宽屏显示器下，特别是编写带有长文本提示词（Prompt）的 AI 应用时，
+        // 120 个字符能有效减少毫无意义的折行，提升阅读体验。
+        "editor.wordWrapColumn": 120,
+        // 在按下 Ctrl+S 保存时，触发具体的代码动作
+        "editor.codeActionsOnSave": {
+            // 自动清理未使用的 import，并按字母表和模块层级对导包进行重新排序
+            "source.organizeImports": "explicit"
+        }
+    },
+    // 开启基础的 Python 静态类型检查。配合 Pylance 插件，能在代码运行前
+    // 标红明显的变量类型不匹配问题，极大降低低级 Bug 的产生率。
+    "python.analysis.typeCheckingMode": "basic",
+    // =========================================================================
+    // 【前端生态圈：TypeScript & JavaScript 及对应框架框架】
+    // 强制指定 Prettier 为前端代码的格式化工具。这是目前前端工程化的绝对标准，
+    // 保证 HTML/CSS/JS/TS 风格的高度统一。
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode" // 针对 React 的 TSX 文件
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode" // 针对 React 的 JSX 文件
+    },
+    // =========================================================================
+    // 【数据交换与配置文件：JSON 家族】
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+        // jsonc 代表 JSON with Comments（带注释的 JSON，如当前的 settings.json）
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    // =========================================================================
+    // 【云原生与容器编排：YAML】
+    // 极其重要：YAML 对缩进极其敏感，错误的缩进会导致 Docker Compose 启动失败
+    "[yaml]": {
+        // 使用红帽官方提供的 YAML 插件进行格式化和语法校验
+        "editor.defaultFormatter": "redhat.vscode-yaml",
+        // 强制使用空格代替 Tab。Tab 在不同终端下解析宽度不同，是 YAML 的死敌。
+        "editor.insertSpaces": true,
+        // 强制缩进宽度严格设定为 2 个空格。
+        "editor.tabSize": 2,
+        // 开启高级自动缩进推断，按回车时自动对齐上一行
+        "editor.autoIndent": "advanced"
+    },
+    // =========================================================================
+    // 【运维与自动化：Shell Script (Bash/Zsh)】
+    "[shellscript]": {
+        // 使用 shell-format 插件（底层通常调用 shfmt）来对齐杂乱的脚本
+        "editor.defaultFormatter": "foxundermoon.shell-format",
+        // Shell 脚本习惯使用 4 个空格的缩进层级
+        "editor.tabSize": 4,
+        // 关键防呆设计：关闭自动换行。Shell 脚本经常包含极长的单行命令，
+        // 如果开启视觉换行，在用鼠标选中并复制到终端时，极易因格式断裂导致命令执行错误。
+        "editor.wordWrap": "off"
+    },
+    // =========================================================================
+    // 【文档编写：Markdown】
+    "[markdown]": {
+        // 使用 Prettier 统一 Markdown 的表格对齐和标题间距
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        // 与 Shell 相反，写文档时必须开启视口换行，否则长段落文字会跑到屏幕外面
+        "editor.wordWrap": "on",
+        // 提升打字体验：在写普通中文/英文文章时，关闭代码补全的弹出框。
+        // 防止每敲一个字，屏幕上就闪烁出无关紧要的代码提示干扰思路。
+        "editor.quickSuggestions": {
+            "comments": "off",
+            "strings": "off",
+            "other": "off"
+        }
     }
 }
