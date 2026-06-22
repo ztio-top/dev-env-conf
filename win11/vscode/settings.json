@@ -1,10 +1,4 @@
 {
-    "github.copilot.advanced": {},
-    "containers.containerClient": "com.microsoft.visualstudio.containers.docker",
-    "containers.orchestratorClient": "com.microsoft.visualstudio.orchestrators.dockercompose",
-    "git.confirmSync": false,
-    "gitlens.ai.model": "vscode",
-    "gitlens.ai.vscode.model": "copilot:oswe-vscode-modelD",
     //🌟、 代码规范与防呆设计 (File & Editor Standards)
     //这些设置能帮你自动清理代码中的“脏数据”，保持代码库（尤其是进行 Code Review 时）的绝对整洁。
     // 保存时自动格式化。配合 Prettier、Black 等插件，写完代码顺手 Ctrl+S 就排版好了。
@@ -15,10 +9,25 @@
     "files.insertFinalNewline": true,
     // 粘贴代码时自动格式化。从 StackOverflow 抄代码时，自动适应你的缩进规范。
     "editor.formatOnPaste": true,
+    // 连缀按键防呆：仅根据具体语言规则自动闭合括号/引号，而非死板补全。
+    // 这极大减少了重构复杂逻辑时因多出后括号导致的光标错位。
+    "editor.autoClosingBrackets": "languageDefined",
+    "editor.autoClosingQuotes": "languageDefined",
     // 强制全局使用 LF 换行，彻底斩断 Win11 与 Linux/云端环境的兼容性隐患
     "files.eol": "\n",
     // 强制全局使用 UTF-8 编码，防止在处理包含中文字符的配置文件或日志时出现乱码
     "files.encoding": "utf8",
+    // =========================================================================
+    // 🌟、 AI 辅助与大模型集成 (AI & LLM Integration)
+    // =========================================================================
+    // 显式开启并强化内联建议。确保不管是 Copilot 还是通过 Continue 接入的本地模型，
+    // 都能像“幽灵文本”一样，在你输入时丝滑地预测并呈现大段代码。
+    "editor.inlineSuggest.enabled": true,
+    // Copilot 进阶配置容器
+    "github.copilot.advanced": {},
+    // GitLens AI 解释模型配置
+    "gitlens.ai.model": "vscode",
+    "gitlens.ai.vscode.model": "copilot:oswe-vscode-modelD",
     //🌟、 视觉与阅读效率 (Visual & Readability)
     // VS Code 默认的界面对代码结构的展示可以进一步优化，特别是在阅读复杂逻辑时。
     // 开启字体连字（需要安装如 Fira Code 或 Win11 自带的 Cascadia Code 字体）。将 !== 渲染为美观的连体符号。
@@ -68,7 +77,10 @@
         "**/.hg": true,
         "**/CVS": true,
         "**/.DS_Store": true,
-        "**/__pycache__": true,
+        "**/__pycache__": true
+    },
+    // 文件监听免疫（极其关键）：告诉 VS Code 底层绝不去监控大文件的状态变化，彻底告别写 AI 代码时的莫名卡顿和 CPU 狂飙
+    "files.watcherExclude": {
         // 告诉 VS Code 的底层监听器：绝对不要去监控这些 AI 权重和数据文件的变化
         "**/.git/objects/**": true,
         "**/node_modules/**": true,
@@ -88,12 +100,22 @@
     // 远程开发神器：连接到 Linux 服务器时，自动转发该服务器上启动的端口到本地 Win11
     // 例如你在远程启动了一个 8080 端口的服务，本地浏览器直接输入 localhost:8080 即可访问
     "remote.autoForwardPorts": true,
+    // 专门为集成终端指定带有完整图标集（Powerline）的字体。
+    // 为了完美渲染包含了丰富路径、Git 状态提示符的高阶终端环境（例如各种深研调优过的 Zsh 和 Oh My Zsh 主题），
+    // 必须使用 Nerd Font，否则终端里的各种状态图标都会变成乱码的小方块。
+    // （注：需提前在 Win11 本地安装对应字体，如 FiraCode Nerd Font 或 MesloLGS NF）
+    "terminal.integrated.fontFamily": "'FiraCode Nerd Font', 'Cascadia Code', monospace",
+    // 容器管理底座依赖
+    "containers.containerClient": "com.microsoft.visualstudio.containers.docker",
+    "containers.orchestratorClient": "com.microsoft.visualstudio.orchestrators.dockercompose",
     //🌟、 Git 工作流加速 (Git Flow)
     // 为了配合你现有的 GitLens 等插件，可以让 VS Code 的 Git 集成更加自动化。
     // 自动拉取远端状态，不仅会在左下角显示是否有新提交，还能避免 push 时才发现有冲突
     "git.autofetch": true,
     // 如果当前分支没有设置 upstream，自动进行发布并关联，省去每次输入 git push --set-upstream 的烦恼
     "git.pushUrl": "auto",
+    // 同步操作时不弹窗确认
+    "git.confirmSync": false,
     // =========================================================================
     //🌟、 工作区与资源管理器体验优化
     // =========================================================================
@@ -103,6 +125,43 @@
     "workbench.startupEditor": "none",
     // 在左侧目录树中突出显示包含错误或警告的文件，方便快速定位问题
     "problems.decorations.enabled": true,
+    // =========================================================================
+    // 🌟、 进阶代码审查与视觉辅助 (Advanced UI & Diff Editor)
+    // =========================================================================
+    // 差异视图防呆：在 Git 提交前看 Diff 时，忽略纯粹的行尾空格或换行符修改。
+    // 这能极大减少 Code Review 时的视觉噪音，让你只关注核心业务逻辑的改动。
+    "diffEditor.ignoreTrimWhitespace": true,
+    // 开启内联参数提示 (Inlay Hints)。在调用 Python 或 TS 的复杂函数时，
+    // 编辑器会以浅色字体自动在代码中显示参数名。
+    // 设置为 "offUnlessPressed" 意味着平时保持界面绝对清爽，按住 Ctrl + Alt 时才会显现。
+    "editor.inlayHints.enabled": "offUnlessPressed",
+    // =========================================================================
+    // 🌟、 资源管理器终极净化 (Explorer File Nesting)
+    // =========================================================================
+    // 开启文件嵌套。当项目中存在大量同名派生文件或环境文件时，自动将它们折叠在主文件下，
+    // 极其适合全栈开发或需要管理多套网络代理规则的项目。
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.expand": false, // 默认保持折叠状态
+    "explorer.fileNesting.patterns": {
+        // 将不同环境的配置文件折叠进主 .env
+        ".env": ".env.*, .env.local, .env.development, .env.production",
+        // 将臃肿的包管理锁文件折叠进 package.json
+        "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, .npmrc",
+        // 将容器构建忽略文件折叠进 Dockerfile
+        "Dockerfile": ".dockerignore",
+        // 将 TS 编译产物折叠起来
+        "*.ts": "${capture}.js, ${capture}.js.map, ${capture}.d.ts"
+    },
+    // =========================================================================
+    // 🌟、 网络连通性与隐私控制 (Network & Privacy)
+    // =========================================================================
+    // 彻底关闭微软遥测数据上报，减少后台无意义的网络发包和 CPU 占用
+    "telemetry.telemetryLevel": "off",
+    // 如果你在本地配置了 VLESS/Reality 等代理客户端的网络路由，
+    // 取消以下注释并将其指向你的本地入站端口。
+    // 这能彻底解决插件商店加载缓慢、或 GitHub Copilot 无法握手鉴权的问题。
+    // "http.proxy": "http://127.0.0.1:7890",
+    // "http.proxyStrictSSL": false
     // =========================================================================
     // 🌟、 常用语言全局兜底配置 (Language-Specific Settings)
     // 作用：当不使用 Dev Containers 或工作区配置时，为零散文件提供基础的规范保障
@@ -146,8 +205,10 @@
         "editor.wordWrapColumn": 120,
         // 在按下 Ctrl+S 保存时，触发具体的代码动作
         "editor.codeActionsOnSave": {
+            // 自动修复所有基础的 Lint 错误（例如自动删除声明了但未使用的 import 或变量）
+            "source.fixAll.ruff": "explicit",
             // 自动清理未使用的 import，并按字母表和模块层级对导包进行重新排序
-            "source.organizeImports": "explicit"
+            "source.organizeImports.ruff": "explicit"
         }
     },
     // 开启基础的 Python 静态类型检查。配合 Pylance 插件，能在代码运行前
