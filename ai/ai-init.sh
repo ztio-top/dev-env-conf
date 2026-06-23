@@ -17,7 +17,7 @@ export APT_OPT="-y -qq -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--f
 
 # [核心优化] 定义推荐的 NVIDIA 驱动版本（无头服务器版，极度稳定）
 # 使用ubuntu-drivers devices命令查看是否有新server版本驱动可用，如果有，建议更新此变量以获得更好的性能和兼容性
-NVIDIA_DRIVER_PKG="nvidia-driver-535-server"
+NVIDIA_DRIVER_PKG="nvidia-driver-595"
 
 # 定义带颜色的日志输出函数
 log_info() { echo -e "\n\033[1;32m[INFO] === $1 ===\033[0m"; }
