@@ -23,7 +23,7 @@ Host pve
     HostName 192.168.2.6
     User zt
     Port 22
-Host pve:ubuntu-ai
+Host pve.ubuntu-ai
     HostName 192.168.2.7
     User zt
     Port 22
