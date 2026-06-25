@@ -25,7 +25,7 @@ Host pve
     Port 22
 Host pve.ubuntu-ai
     HostName 192.168.2.7
-    User zt
+    User ztio
     Port 22
 EOF
 )
