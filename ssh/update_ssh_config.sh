@@ -27,6 +27,10 @@ Host pve.ubuntu-ai
     HostName 192.168.2.7
     User ztio
     Port 22
+Host hp.pve
+    HostName 192.168.2.8
+    User root
+    Port 22
 EOF
 )
 
