@@ -21,7 +21,7 @@ Host mac-studio
     Port 22
 Host pve
     HostName 192.168.2.6
-    User zt
+    User root
     Port 22
 Host pve.ubuntu-ai
     HostName 192.168.2.7

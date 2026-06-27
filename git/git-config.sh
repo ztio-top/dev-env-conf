@@ -71,6 +71,7 @@ Thumbs.db
 
 # Python
 .venv/
+__pycache__/
 EOF
 fi
 # 设置全局忽略文件路径
