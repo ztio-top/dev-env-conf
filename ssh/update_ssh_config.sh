@@ -31,6 +31,10 @@ Host hp.pve
     HostName 192.168.2.8
     User root
     Port 22
+Host hp.pve.ubuntu-ai
+    HostName 192.168.2.9
+    User root
+    Port 22
 EOF
 )
 
