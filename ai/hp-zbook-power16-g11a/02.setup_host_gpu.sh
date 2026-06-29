@@ -11,8 +11,17 @@ if [ "$EUID" -ne 0 ]; then
 	echo "❌ 请使用 root 权限"
 	exit 1
 fi
-if ! lsmod | grep -qw amdgpu; then
-	echo "❌ 未检测到 amdgpu 驱动"
+# if ! lsmod | grep -qw amdgpu; then
+# 	echo "❌ 未检测到 amdgpu 驱动"
+# 	exit 1
+# fi
+# 2. 硬件级别验证 (不再依赖 lsmod，直接查 PCI 设备状态)
+echo "🔍 正在扫描 AMD GPU 硬件..."
+if lspci -k | grep -A 3 -E "(VGA|Display)" | grep -q "Kernel driver in use: amdgpu"; then
+	echo "✅ [通过] 检测到 AMD GPU，且 Kernel driver 正在使用 amdgpu。"
+else
+	echo "❌ 错误: 未能在 PCI 总线找到使用 amdgpu 驱动的设备。"
+	echo "   如果你的显卡能正常工作，请检查 lspci -k | grep -A 3 -E '(VGA|Display)' 的输出。"
 	exit 1
 fi
 
