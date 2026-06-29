@@ -52,6 +52,9 @@ Environment="OLLAMA_IGPU_ENABLE=1"
 EOF
 echo "✅ Systemd 配置写入完成: $OLLAMA_OVERRIDE_FILE"
 
+# 将 ollama 用户加入显卡渲染和内核计算组
+usermod -aG video,systemd-resolve ollama
+
 # 5. 重载服务使配置生效
 echo -e "\n🔄 重新加载并重启 Ollama 服务..."
 systemctl daemon-reload
