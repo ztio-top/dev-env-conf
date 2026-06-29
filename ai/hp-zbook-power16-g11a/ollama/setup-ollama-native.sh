@@ -48,6 +48,7 @@ cat <<EOF >"$OLLAMA_OVERRIDE_FILE"
 [Service]
 Environment="OLLAMA_HOST=0.0.0.0"
 Environment="HSA_OVERRIDE_GFX_VERSION=11.0.0"
+Environment="OLLAMA_IGPU_ENABLE=1"
 EOF
 echo "✅ Systemd 配置写入完成: $OLLAMA_OVERRIDE_FILE"
 
