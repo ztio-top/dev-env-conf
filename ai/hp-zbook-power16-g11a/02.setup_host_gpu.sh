@@ -63,7 +63,7 @@ for gid in $VIDEO_GID $RENDER_GID; do
 done
 
 # 6. 生成注入配置块
-BLOCK_MARKER="# --- AMD 780M iGPU/KFD Passthrough ---"
+BLOCK_MARKER="# --- AMD 780M iGPU KFD Passthrough ---"
 BLOCK_END="# ----------------------------------------"
 
 # 动态计算 idmap (处理 video 和 render 组顺序)
@@ -94,10 +94,26 @@ $BLOCK_END
 EOF
 )
 
+# --- 备份逻辑 ---
+BACKUP_FILE="${CONF_FILE}.bak_$(date +%Y%m%d_%H%M%S)"
+echo "💾 正在备份配置文件至: $BACKUP_FILE"
+cp "$CONF_FILE" "$BACKUP_FILE"
+
 # 7. 注入到配置文件 (使用 sed 进行幂等替换)
 echo "⚙️ 正在向 $CONF_FILE 注入配置..."
+# 先从原文件中删除旧的标记块 (如果存在)
 sed -i "/^$BLOCK_MARKER$/,/^$BLOCK_END$/d" "$CONF_FILE"
-echo "$MAP_BLOCK" >>"$CONF_FILE"
+
+# 将新生成的块 + 原文件剩余内容 合并到一个临时文件
+echo "$MAP_BLOCK" >/tmp/amd_gpu_config.tmp
+cat /tmp/amd_gpu_config.tmp "$CONF_FILE" >/tmp/final_config.tmp
+# 将临时文件移回原位置
+mv /tmp/final_config.tmp "$CONF_FILE"
+
+rm -f /tmp/amd_gpu_config.tmp
+
+echo "✅ 配置已写入文件开头，且保留了原有配置（包括快照段）。"
+echo "⚠️  操作提示：请执行: pct stop $LXC_ID && pct start $LXC_ID"
 
 echo "====================================================="
 echo "🎉 容器 $LXC_ID 的 780M 直通配置已成功更新并写入！"
