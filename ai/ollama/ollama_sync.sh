@@ -4,7 +4,7 @@
 # Ollama 模型同步管理脚本 v2.0
 # ==========================================
 
-CONFIG_FILE="~/ollama_models.txt"
+CONFIG_FILE="$HOME/ollama_models.txt"
 
 # 检查 Ollama 是否安装及运行
 function check_ollama() {
