@@ -40,6 +40,13 @@ source .venv/bin/activate
 
 # AMD 核显架构强制指定 (780M 为 RDNA3)
 export HSA_OVERRIDE_GFX_VERSION=11.0.0
+
+# 🚀 [修复 GPU Hang 的魔法指令] 禁用 SDMA 内存直接访问，解决 APU 显存搬运崩溃
+export HSA_ENABLE_SDMA=0
+
+# 🚀 [修复 显存碎片化] 优化 PyTorch 的显存分配机制，防止 OOM 和 Hang
+export PYTORCH_HIP_ALLOC_CONF="garbage_collection_threshold:0.8,max_split_size_mb:128"
+
 # 本地 Ollama 指向
 export OLLAMA_BASE_URL=http://127.0.0.1:11434
 
