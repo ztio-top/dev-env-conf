@@ -1,5 +1,5 @@
 #!/bin/bash
-# Open WebUI 满血版部署脚本 (基于 uv)
+# Open WebUI 满血版部署及 Systemd 服务配置脚本
 
 set -e
 
@@ -58,4 +58,39 @@ open-webui serve
 EOF
 
 chmod +x start_webui.sh
-echo "部署完成！现在运行 ./start_webui.sh 即可开启满血模式。"
+
+echo "--- 6. 配置 Systemd 后台服务 ---"
+SERVICE_FILE="/etc/systemd/system/open-webui.service"
+WORK_DIR="$HOME/open-webui-full"
+
+# 幂等性：覆盖写入服务配置，动态获取当前用户的 HOME 目录
+cat <<EOF >"$SERVICE_FILE"
+[Unit]
+Description=Open WebUI Daemon (AMD ROCm Optimized)
+After=network.target
+
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=$WORK_DIR
+ExecStart=$WORK_DIR/start_webui.sh
+# 崩溃自动重启机制，完美替代 while true
+Restart=always
+RestartSec=3
+# 确保服务能找到系统基础命令
+Environment=PATH=$WORK_DIR/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# 应用 Systemd 更改
+systemctl daemon-reload
+systemctl enable open-webui.service
+systemctl restart open-webui.service
+
+echo "================================================================"
+echo "🎉 部署完成！Open WebUI 已作为后台服务运行。"
+echo "👉 查看实时日志运行: journalctl -u open-webui -f"
+echo "👉 查看服务状态运行: systemctl status open-webui"
+echo "================================================================"
