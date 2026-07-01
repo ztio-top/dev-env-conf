@@ -35,6 +35,14 @@ Host hp.pve.ubuntu-ai
     HostName 192.168.2.9
     User root
     Port 22
+Host pi1
+    HostName 192.168.2.10
+    User zt
+    Port 22
+Host pi2
+    HostName 192.168.2.11
+    User pi
+    Port 22
 EOF
 )
 
