@@ -1,80 +1,100 @@
 #!/bin/bash
 
 # ==============================================================================
-# PVE 笔记本工作站优化脚本 (HP ZBook)
-# 功能: 1. 自动熄屏 (consoleblank)  2. 禁用合盖休眠 (HandleLidSwitch)
-# 特性: 幂等性设计、自动备份、双向日志记录 (控制台 + Log文件)
+# PVE 笔记本工作站 (HP ZBook) 全面优化脚本 v2.0
+# 功能: 1. 自动熄屏 2. 禁用合盖休眠 3. 修复 EFI 引导警告
+# 特性: 绝对幂等性、动态清理内核参数、自动备份、双向日志
 # ==============================================================================
 
-# 定义日志文件路径
 LOG_FILE="/var/log/pve_zbook_optimization_$(date +%Y%m%d).log"
+BLANK_TIME="300"
 
-# 定义配置项值
-BLANK_TIME="300" # 屏幕熄灭时间，单位：秒
-
-# 初始化日志记录功能 (同时输出到屏幕和文件)
+# ------------------------------------------------------------------------------
+# 基础函数：双向日志与备份
+# ------------------------------------------------------------------------------
 log_msg() {
 	local time_stamp=$(date +'%Y-%m-%d %H:%M:%S')
 	echo -e "[$time_stamp] $1" | tee -a "$LOG_FILE"
 }
 
-log_msg "============================================="
-log_msg "开始执行 PVE (HP ZBook) 优化配置脚本"
-log_msg "日志文件存放于: $LOG_FILE"
-log_msg "============================================="
-
-# ------------------------------------------------------------------------------
-# 辅助函数：文件备份
-# ------------------------------------------------------------------------------
 backup_file() {
 	local target_file=$1
 	if [ -f "$target_file" ]; then
 		local backup_file="${target_file}.bak_$(date +%Y%m%d_%H%M%S)"
-		cp "$target_file" "$backup_file"
-		log_msg "[备份] 已成功备份文件: $target_file -> $backup_file"
-	else
-		log_msg "[跳过] 文件不存在，无需备份: $target_file"
+		cp -p "$target_file" "$backup_file"
+		log_msg "[备份] 已备份: $target_file -> ${backup_file##*/}"
 	fi
 }
 
-# ==============================================================================
-# 任务 1: 配置内核引导参数 (自动熄屏)
-# ==============================================================================
+log_msg "====================================================="
+log_msg "🚀 开始执行 PVE (HP ZBook) 全面优化配置脚本"
+log_msg "====================================================="
+
 UPDATE_GRUB=0
 UPDATE_BOOT=0
 
-# 场景 A: 检查并配置 GRUB 引导
-if [ -f "/etc/default/grub" ]; then
+# ==============================================================================
+# 任务 1: 修复 GRUB EFI 移动介质引导警告 (幂等)
+# ==============================================================================
+# 确保安装了 debconf-utils 以便查询当前状态
+if ! command -v debconf-get-selections &>/dev/null; then
+	apt-get install -y debconf-utils >/dev/null 2>&1
+fi
+
+if debconf-get-selections | grep -q "grub2/force_efi_extra_removable[[:space:]]*boolean[[:space:]]*true"; then
+	log_msg "[幂等] EFI 引导修复 (force_efi_extra_removable) 已应用，跳过。"
+else
+	log_msg "[修复] 发现未配置 force_efi_extra_removable，正在修复 EFI 引导警告..."
+	echo 'grub-efi-amd64 grub2/force_efi_extra_removable boolean true' | debconf-set-selections -v -u >>"$LOG_FILE" 2>&1
+	DEBIAN_FRONTEND=noninteractive apt-get install -y --reinstall grub-efi-amd64 >>"$LOG_FILE" 2>&1
+	UPDATE_BOOT=1
+	log_msg "[状态] EFI 引导警告修复完成。"
+fi
+
+# ==============================================================================
+# 任务 2: 注入自动熄屏参数 (兼容 GRUB & systemd-boot)
+# ==============================================================================
+
+# 场景 A: 处理 /etc/default/grub
+GRUB_FILE="/etc/default/grub"
+if [ -f "$GRUB_FILE" ]; then
 	log_msg "[检测] 发现 GRUB 配置文件，准备处理..."
-	if grep -q "consoleblank=" "/etc/default/grub"; then
-		log_msg "[幂等] GRUB 已经包含 consoleblank 参数，无需重复添加。"
+	if grep -q "consoleblank=" "$GRUB_FILE"; then
+		log_msg "[幂等] GRUB 配置文件已包含 consoleblank，跳过。"
 	else
-		backup_file "/etc/default/grub"
+		backup_file "$GRUB_FILE"
 		# 使用 sed 在 GRUB_CMDLINE_LINUX_DEFAULT 的值内部末尾追加参数
-		sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"/GRUB_CMDLINE_LINUX_DEFAULT="\1 consoleblank='"$BLANK_TIME"'"/' /etc/default/grub
-		log_msg "[修改] 已向 /etc/default/grub 注入 consoleblank=$BLANK_TIME"
+		sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"/GRUB_CMDLINE_LINUX_DEFAULT="\1 consoleblank='"$BLANK_TIME"'"/' "$GRUB_FILE"
+		log_msg "[修改] 已向 $GRUB_FILE 注入 consoleblank=$BLANK_TIME"
 		log_msg "[详情] 当前 GRUB_CMDLINE 核心参数: $(grep '^GRUB_CMDLINE_LINUX_DEFAULT=' /etc/default/grub)"
 		UPDATE_GRUB=1
 	fi
 fi
 
-# 场景 B: 检查并配置 systemd-boot (ZFS 常见)
-if [ -f "/etc/kernel/cmdline" ]; then
-	log_msg "[检测] 发现 systemd-boot 配置文件 (cmdline)，准备处理..."
-	if grep -q "consoleblank=" "/etc/kernel/cmdline"; then
-		log_msg "[幂等] cmdline 已经包含 consoleblank 参数，无需重复添加。"
-	else
-		backup_file "/etc/kernel/cmdline"
-		# 在第一行的末尾直接追加配置
-		sed -i '1 s/$/ consoleblank='"$BLANK_TIME"'/' /etc/kernel/cmdline
-		log_msg "[修改] 已向 /etc/kernel/cmdline 追加 consoleblank=$BLANK_TIME"
-		log_msg "[详情] 当前 cmdline 内容: $(cat /etc/kernel/cmdline)"
-		UPDATE_BOOT=1
-	fi
+# 场景 B: 处理 proxmox-boot-tool 专用的 /etc/kernel/cmdline
+CMDLINE_FILE="/etc/kernel/cmdline"
+
+# 1. 如果文件不存在，或者文件内错误地包含了 BOOT_IMAGE/initrd，我们需要重新生成一个纯净版
+if [ ! -f "$CMDLINE_FILE" ] || grep -qE "(BOOT_IMAGE|initrd)=" "$CMDLINE_FILE"; then
+	log_msg "[清理] 发现 $CMDLINE_FILE 不存在或包含版本脏数据，正在重新生成..."
+	backup_file "$CMDLINE_FILE"
+	# 从 /proc/cmdline 提取当前参数，剥离 BOOT_IMAGE 和 initrd，利用 xargs 清理多余空格
+	cat /proc/cmdline | sed -E 's/(BOOT_IMAGE|initrd)=[^ ]+//g' | xargs >"$CMDLINE_FILE"
+	log_msg "[状态] 已生成纯净的基础内核参数。"
+fi
+
+# 2. 检查纯净后的 cmdline 是否包含 consoleblank
+if grep -q "consoleblank=" "$CMDLINE_FILE"; then
+	log_msg "[幂等] $CMDLINE_FILE 已包含 consoleblank，跳过。"
+else
+	backup_file "$CMDLINE_FILE"
+	sed -i "s/$/ consoleblank=$BLANK_TIME/" "$CMDLINE_FILE"
+	log_msg "[修改] 已向 $CMDLINE_FILE 追加 consoleblank=$BLANK_TIME"
+	UPDATE_BOOT=1
 fi
 
 # ==============================================================================
-# 任务 2: 配置合盖不休眠 (systemd-logind)
+# 任务 3: 配置合盖不休眠 (systemd-logind)
 # ==============================================================================
 LOGIND_CONF="/etc/systemd/logind.conf"
 RESTART_LOGIND=0
@@ -89,7 +109,7 @@ if [ -f "$LOGIND_CONF" ]; then
 	for setting in "${LID_SETTINGS[@]}"; do
 		# 检查是否已经是生效状态 (未被注释且值为 ignore)
 		if grep -q "^${setting}=ignore" "$LOGIND_CONF"; then
-			log_msg "[幂等] ${setting}=ignore 已经正确配置生效，无需修改。"
+			log_msg "[幂等] $setting=ignore 已正确生效，跳过。"
 		else
 			if [ $backup_done -eq 0 ]; then
 				backup_file "$LOGIND_CONF"
@@ -116,17 +136,18 @@ else
 fi
 
 # ==============================================================================
-# 任务 3: 应用更改 (更新引导和重启服务)
+# 任务 4: 触发配置生效
 # ==============================================================================
+log_msg "-----------------------------------------------------"
 
 if [ $UPDATE_GRUB -eq 1 ]; then
-	log_msg "[执行] 正在更新 GRUB 引导记录 (update-grub)..."
-	update-grub | tee -a "$LOG_FILE"
+	log_msg "[执行] 更新 GRUB 引导记录 (update-grub)..."
+	update-grub 2>&1 | tee -a "$LOG_FILE"
 fi
 
 if [ $UPDATE_BOOT -eq 1 ]; then
 	log_msg "[执行] 正在更新 systemd-boot (proxmox-boot-tool refresh)..."
-	proxmox-boot-tool refresh | tee -a "$LOG_FILE"
+	proxmox-boot-tool refresh 2>&1 | tee -a "$LOG_FILE"
 fi
 
 if [ $RESTART_LOGIND -eq 1 ]; then
@@ -135,11 +156,14 @@ if [ $RESTART_LOGIND -eq 1 ]; then
 	log_msg "[状态] systemd-logind 服务重启完成。"
 fi
 
-log_msg "============================================="
-log_msg "脚本执行完毕！"
-if [ $UPDATE_GRUB -eq 1 ] || [ $UPDATE_BOOT -eq 1 ]; then
-	log_msg ">> 提示: 内核引导参数已修改，你需要执行 'reboot' 重启系统后屏幕自动熄屏才能生效。"
+if [ $UPDATE_GRUB -eq 0 ] && [ $UPDATE_BOOT -eq 0 ] && [ $RESTART_LOGIND -eq 0 ]; then
+	log_msg "✅ 检测到所有配置均已处于最优状态，未对系统进行任何修改。"
+else
+	log_msg "✅ 配置已更新！"
+	if [ $UPDATE_GRUB -eq 1 ] || [ $UPDATE_BOOT -eq 1 ]; then
+		log_msg "⚠️  内核参数已变更，请在方便时执行 'reboot' 以使自动熄屏生效。"
+	fi
 fi
-log_msg "合盖策略已即时生效，可以放心地合上 ZBook 的屏幕了。"
-log_msg "============================================="
+
+log_msg "====================================================="
 exit 0
