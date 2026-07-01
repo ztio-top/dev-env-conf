@@ -10,24 +10,23 @@ fi
 
 case "$1" in
 off)
-	# 方案 A: 亮度调至 0
+	# 1. 先把 PWM 占空比降到 0 (软关)
 	echo 0 | sudo tee "$B_DIR/brightness" >/dev/null
+	sleep 0.1 # 给驱动电路一点缓冲时间
 
-	# 方案 B: 改变电源状态 (4 为关闭，0 为开启。如果方案 A 没彻底黑屏，可以取消下面这行的注释)
-	# echo 4 | sudo tee "$B_DIR/bl_power" > /dev/null
-
+	# 2. 再切断背光电源状态 (硬关)
+	echo 4 | sudo tee "$B_DIR/bl_power" >/dev/null
 	echo "屏幕背光已关闭 (省电模式)"
 	;;
 on)
-	# 获取屏幕支持的最大亮度
 	MAX_B=$(cat "$B_DIR/max_brightness")
 
-	# 恢复亮度
+	# 1. 先恢复背光电源状态 (通电)
+	echo 0 | sudo tee "$B_DIR/bl_power" >/dev/null
+	sleep 0.1 # 等待 IC 唤醒和稳定
+
+	# 2. 再将亮度拉升到之前的设定值 (亮屏)
 	echo "$MAX_B" | sudo tee "$B_DIR/brightness" >/dev/null
-
-	# 恢复电源状态
-	# echo 0 | sudo tee "$B_DIR/bl_power" > /dev/null
-
 	echo "屏幕背光已开启"
 	;;
 *)
